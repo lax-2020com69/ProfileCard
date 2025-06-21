@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>PortfolioCard</title>
+	<link rel="icon" type="image/jpg" href="https://static.vecteezy.com/system/resources/previews/025/013/592/original/illustration-of-user-icon-in-black-and-white-color-vector.jpg">
+	<!-- FontAwesome CDN -->
+	<link
+	  rel="stylesheet"
+	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+	  crossorigin="anonymous"
+	/>
+	<style>
+	  body {
+		margin: 0;
+		background: #cde7f9;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	  }
+
+	  .card {
+		width: 320px;
+		height: 420px;
+		position: relative;
+		perspective: 1200px;
+		cursor: pointer;
+		outline-offset: 4px;
+	  }
+
+	  .inner-card {
+		width: 100%;
+		height: 100%;
+		border-radius: 16px;
+		position: relative;
+		transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+		transform-style: preserve-3d;
+		box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+		background: white;
+	  }
+	  .card.flipped .inner-card {
+		transform: rotateY(180deg);
+	  }
+
+	  /* Front and back */
+	  .front,
+	  .back {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		border-radius: 16px;
+		backface-visibility: hidden;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 24px 30px 90px;
+		box-sizing: border-box;
+		overflow: hidden;
+		user-select: none;
+	  }
+
+	  /* Front styling */
+	  .front {
+		background: linear-gradient(135deg, #4a90e2, #50e3c2);
+		color: white;
+		justify-content: center;
+	  }
+	  .front img.profile-img {
+		width: 130px;
+		height: 130px;
+		border-radius: 50%;
+		border: 4px solid rgba(255, 255, 255, 0.7);
+		object-fit: cover;
+		margin-bottom: 20px;
+		box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+	  }
+	  .front .name {
+		font-size: 1.8rem;
+		font-weight: 700;
+		margin-bottom: 8px;
+		letter-spacing: 0.05em;
+		text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+	  }
+	  .front .profession {
+		font-size: 1.1rem;
+		font-weight: 500;
+		opacity: 0.9;
+		letter-spacing: 0.05em;
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+	  }
+
+	  /* Back styling */
+	  .back {
+		background: #fff;
+		color: #333;
+		transform: rotateY(180deg);
+		justify-content: space-between;
+		box-shadow: inset 0 0 50px rgba(74, 144, 226, 0.1);
+		padding-bottom: 90px;
+	  }
+	  .back .name-back {
+		font-size: 1.5rem;
+		font-weight: 700;
+		margin-bottom: 20px;
+		color: #4a90e2;
+		text-align: center;
+	  }
+	  .back .info-item {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		font-size: 1rem;
+		margin-bottom: 16px;
+		color: #555;
+		padding: 0 12px;
+	  }
+	  .back .info-item i {
+		color: #4a90e2;
+		min-width: 24px;
+		font-size: 1.3rem;
+	  }
+	  .back .view-profile-btn {
+		margin-top: 20px;
+		background: #4a90e2;
+		color: white;
+		border: none;
+		padding: 14px 34px;
+		font-weight: 600;
+		font-size: 1.1rem;
+		border-radius: 30px;
+		box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+		cursor: pointer;
+		text-decoration: none;
+		display: inline-block;
+		align-self: center;
+		transition: background-color 0.3s ease, box-shadow 0.3s ease;
+	  }
+	  .back .view-profile-btn:hover,
+	  .back .view-profile-btn:focus {
+		background-color: #357abd;
+		box-shadow: 0 12px 30px rgba(53, 122, 189, 0.7);
+	  }
+
+	  .back .get-in-touch {
+		display: flex;
+		justify-content: center;
+		gap: 30px;
+		margin-top: 28px;
+		padding-top: 16px;
+		border-top: 1px solid #eee;
+	  }
+	  .back .get-in-touch a {
+		color: #4a90e2;
+		font-size: 1.7rem;
+		transition: color 0.3s ease;
+		text-decoration: none;
+	  }
+	  .back .get-in-touch a:hover,
+	  .back .get-in-touch a:focus {
+		color: #357abd;
+	  }
+
+	  /* Wave container - bottom of card */
+	  .wave-container {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 90px;
+		pointer-events: none;
+		overflow: hidden;
+		border-bottom-left-radius: 16px;
+		border-bottom-right-radius: 16px;
+		z-index: 10;
+	  }
+	  .wave-svg {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 200%;
+		height: 90px;
+		animation: waveMove 6s linear infinite;
+	  }
+	  .wave-svg path {
+		fill: #4a90e2;
+		opacity: 0.35;
+	  }
+	  .wave-svg:nth-child(2) path {
+		fill: #50e3c2;
+		opacity: 0.25;
+		animation-duration: 8s;
+		bottom: 5px;
+	  }
+	  @keyframes waveMove {
+		0% {
+		  transform: translateX(0);
+		}
+		100% {
+		  transform: translateX(-50%);
+		}
+	  }
+
+	  /* Focus outline for accessibility */
+	  .card:focus-visible {
+		outline: 3px solid #357abd;
+		outline-offset: 6px;
+	  }
+	</style>
+</head>
+<body>
+
+	<div
+	  class="card"
+	  tabindex="0"
+	  aria-label="Portfolio card"
+	  role="button"
+	  aria-pressed="false"
+	>
+	  <div class="inner-card">
+		<!-- Front -->
+		<div class="front" aria-hidden="false">
+		  <img
+			src="https://raw.githubusercontent.com/lax-2020com69/Home/refs/heads/main/Home/profile.jpg"
+			alt="Profile Picture of Laxman"
+			class="profile-img"
+			draggable="false"
+		  />
+		  <h2 class="name">T.Laxman</h2>
+		  <p class="profession">Software Engineer | Full-Stack & Mobile Developer</p>
+
+		  <div class="wave-container" aria-hidden="true">
+			<svg
+			  class="wave-svg"
+			  viewBox="0 0 1200 120"
+			  preserveAspectRatio="none"
+			  xmlns="http://www.w3.org/2000/svg"
+			>
+			  <path
+				d="M0,40 C150,90 350,0 600,40 C850,80 1050,10 1200,40 L1200,120 L0,120 Z"
+			  ></path>
+			</svg>
+			<svg
+			  class="wave-svg"
+			  viewBox="0 0 1200 120"
+			  preserveAspectRatio="none"
+			  xmlns="http://www.w3.org/2000/svg"
+			  style="bottom: 8px;"
+			>
+			  <path d="M0,60 C300,100 900,0 1200,60 L1200,120 L0,120 Z"></path>
+			</svg>
+		  </div>
+		</div>
+
+		<!-- Back -->
+		<div class="back" aria-hidden="true">
+		  <div>
+			<h2 class="name-back">T.Laxman</h2>
+
+			<div class="info-item">
+			  <a href="mailto:laxmanlax6400@gmail.com" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 12px;">
+				<i class="fa-solid fa-envelope"></i>
+				<span>laxmanlax6400@gmail.com</span>
+			  </a>
+			</div>
+			<div class="info-item">
+			  <a href="tel:+94778777551" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 12px;">
+				<i class="fa-solid fa-phone"></i>
+				<span>+94 778 777 551</span>
+			  </a>
+			</div>
+			<div class="info-item">
+			  <i class="fa-solid fa-location-dot"></i>
+			  <span>Colombo, Sri Lanka</span>
+			</div>
+
+			<a href="https://lax-2020com69.github.io/lax/" target="_blank" class="view-profile-btn" role="button" tabindex="0"
+			  >View Profile</a
+			>
+		  </div>
+
+		  <div class="get-in-touch" aria-label="Social media links">
+		  <a href="https://github.com/lax-2020com69/" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+			<i class="fa-brands fa-github"></i>
+		  </a>
+		  <a href="https://www.linkedin.com/in/laxman6400/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+			<i class="fa-brands fa-linkedin"></i>
+		  </a>
+		</div>
+
+
+		  <div class="wave-container" aria-hidden="true">
+			<svg
+			  class="wave-svg"
+			  viewBox="0 0 1200 120"
+			  preserveAspectRatio="none"
+			  xmlns="http://www.w3.org/2000/svg"
+			>
+			  <path
+				d="M0,40 C150,90 350,0 600,40 C850,80 1050,10 1200,40 L1200,120 L0,120 Z"
+			  ></path>
+			</svg>
+			<svg
+			  class="wave-svg"
+			  viewBox="0 0 1200 120"
+			  preserveAspectRatio="none"
+			  xmlns="http://www.w3.org/2000/svg"
+			  style="bottom: 8px;"
+			>
+			  <path d="M0,60 C300,100 900,0 1200,60 L1200,120 L0,120 Z"></path>
+			</svg>
+		  </div>
+		</div>
+	  </div>
+	</div>
+
+	<script>
+	  const card = document.querySelector('.card');
+
+	  function flipOn() {
+		card.classList.add('flipped');
+		card.setAttribute('aria-pressed', 'true');
+		card.querySelector('.front').setAttribute('aria-hidden', 'true');
+		card.querySelector('.back').setAttribute('aria-hidden', 'false');
+	  }
+
+	  function flipOff() {
+		card.classList.remove('flipped');
+		card.setAttribute('aria-pressed', 'false');
+		card.querySelector('.front').setAttribute('aria-hidden', 'false');
+		card.querySelector('.back').setAttribute('aria-hidden', 'true');
+	  }
+
+	  // Flip on hover (mouse enter/leave)
+	  card.addEventListener('mouseenter', flipOn);
+	  card.addEventListener('mouseleave', flipOff);
+
+	  // Click toggles flip (for touch devices & keyboard users)
+	  card.addEventListener('click', () => {
+		if (card.classList.contains('flipped')) {
+		  flipOff();
+		} else {
+		  flipOn();
+		}
+	  });
+
+	  // Keyboard: Enter or Space toggles flip
+	  card.addEventListener('keydown', (e) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+		  e.preventDefault();
+		  if (card.classList.contains('flipped')) {
+			flipOff();
+		  } else {
+			flipOn();
+		  }
+		}
+	  });
+	</script>
+
+</body>
+</html>
